@@ -4,12 +4,6 @@ import pandas as pd
 import requests
 import io
 import time
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service as ChromeService
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from webdriver_manager.chrome import ChromeDriverManager
 from docx import Document
 from PyPDF2 import PdfMerger
 from PyPDF2 import PdfReader
@@ -18,7 +12,7 @@ st.set_page_config(page_title="📰 Flexible News Scraper", layout="centered")
 st.title("📰 Flexible Web Scraper Artikel Berita")
 
 # ===== Sidebar Navigasi Tombol =====
-st.sidebar.image("djpblampung.png", width=200)
+st.sidebar.image("Assets/djpblampung.png", width=200)
 st.sidebar.markdown("## 🧭 Menu Navigasi")
 
 if "page" not in st.session_state:
@@ -38,7 +32,7 @@ st.sidebar.info(
     """
     💡 *Gunakan tools ini untuk mengambil konten dari situs berita secara fleksibel.*
     Anda hanya perlu menentukan tag HTML dan class untuk elemen Judul, Tanggal, dan Isi Artikel. *Serta mampu digunakan untuk menggabungkan beberapa file dengan format yang sama menjadi 1 file baru.*
-    
+
     - **Scrap Satu Artikel**: Cocok untuk ekstraksi cepat dari 1 halaman berita.
     - **Scrap Banyak Artikel**: Ambil banyak berita dari daftar halaman sekaligus.
     - **Gabungkan File**: Gabungkan beberapa file dengan format yang sama (**CSV, Excel, Word, atau PDF**) menjadi satu file baru.
@@ -46,7 +40,7 @@ st.sidebar.info(
     icon="ℹ️"
 )
 
-html_tags = ["div", "article", "section", "span", "body", "a", "h1", "h2", "h3", "h4", "h5", "p", "time", "style", "li", "ul", "i", "footer", "header", "figure", "nav", "script"]
+html_tags = ["div", "article", "section", "span", "a", "h1", "h2", "h3", "h4", "h5", "p", "time", "style", "li", "ul", "i", "footer", "header", "figure", "nav", "script"]
 
 # ===== Halaman Scrap Satu Artikel =====
 if st.session_state.page == "📄 Scrap Satu Artikel":
@@ -128,16 +122,9 @@ elif st.session_state.page == "📑 Scrap Banyak Artikel":
         content_tag = st.selectbox("Tag Isi Artikel", options=html_tags, index=html_tags.index("div"))
         content_class = st.text_input("Class Isi Artikel")
 
-    def start_driver():
-        options = webdriver.ChromeOptions()
-        options.add_argument("--headless")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-        return webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
-
-    def fetch_article(driver, url):
-        driver.get(url)
-        soup = BeautifulSoup(driver.page_source, "html.parser")
+    def fetch_article(url):
+        response = requests.get(url, timeout=10)
+        soup = BeautifulSoup(response.content, "html.parser")
         title = soup.find(title_tag, class_=title_class or None)
         date = soup.find(date_tag, class_=date_class or None)
         content_el = soup.find(content_tag, class_=content_class or None)
@@ -152,12 +139,11 @@ elif st.session_state.page == "📑 Scrap Banyak Artikel":
         if not all([start_url, article_container_tag, article_link_tag, title_tag, date_tag, content_tag]):
             st.error("⚠️ Harap lengkapi semua input tag.")
         else:
-            driver = start_driver()
-            driver.get(start_url)
             data = {"Tanggal": [], "Judul": [], "Isi": []}
 
             try:
-                soup = BeautifulSoup(driver.page_source, 'html.parser')
+                response = requests.get(start_url, timeout=10)
+                soup = BeautifulSoup(response.content, 'html.parser')
                 containers = soup.find_all(article_container_tag, class_=article_container_class)
                 st.write(f"Ditemukan {len(containers)} container artikel")
 
@@ -170,7 +156,7 @@ elif st.session_state.page == "📑 Scrap Banyak Artikel":
 
                 for link in links:
                     st.write(f"🔗 Mengambil: {link}")
-                    title, date, content = fetch_article(driver, link)
+                    title, date, content = fetch_article(link)
                     data["Tanggal"].append(date)
                     data["Judul"].append(title)
                     data["Isi"].append(content)
@@ -180,7 +166,6 @@ elif st.session_state.page == "📑 Scrap Banyak Artikel":
             except Exception as e:
                 st.error(f"❌ Gagal mengambil artikel: {e}")
 
-            driver.quit()
             result_df = pd.DataFrame(data)
             st.success(f"✅ Selesai! Total artikel: {len(result_df)}")
             st.dataframe(result_df)
