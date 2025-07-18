@@ -171,7 +171,7 @@ elif st.session_state.page == "📑 Scrap Banyak Artikel":
             st.dataframe(result_df)
 
 # ===== Simpan Hasil =====
-if "scraped_data" in st.session_state:
+if "scraped_data" in st.session_state and st.session_state.page != "📎 Gabungkan File":
     result_df = st.session_state["scraped_data"]
 
     st.markdown("---")
