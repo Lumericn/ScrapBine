@@ -46,7 +46,7 @@ st.sidebar.info(
     icon="ℹ️"
 )
 
-html_tags = ["div", "article", "section", "span", "a", "h1", "h2", "h3", "h4", "h5", "p", "time", "style", "li", "ul", "i", "footer", "header", "figure", "nav", "script"]
+html_tags = ["div", "article", "section", "span", "body", "a", "h1", "h2", "h3", "h4", "h5", "p", "time", "style", "li", "ul", "i", "footer", "header", "figure", "nav", "script"]
 
 # ===== Halaman Scrap Satu Artikel =====
 if st.session_state.page == "📄 Scrap Satu Artikel":
