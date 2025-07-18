@@ -18,7 +18,7 @@ st.set_page_config(page_title="📰 Flexible News Scraper", layout="centered")
 st.title("📰 Flexible Web Scraper Artikel Berita")
 
 # ===== Sidebar Navigasi Tombol =====
-st.sidebar.image("Assets/djpblampung.png", width=200)
+st.sidebar.image("djpblampung.png", width=200)
 st.sidebar.markdown("## 🧭 Menu Navigasi")
 
 if "page" not in st.session_state:
