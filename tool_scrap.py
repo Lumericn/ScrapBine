@@ -12,7 +12,7 @@ st.set_page_config(page_title="📰 Flexible News Scraper", layout="centered")
 st.title("📰 Flexible Web Scraper Artikel Berita")
 
 # ===== Sidebar Navigasi Tombol =====
-st.sidebar.image("Assets/djpblampung.png", width=200)
+st.sidebar.image("djpblampung.png", width=200)
 st.sidebar.markdown("## 🧭 Menu Navigasi")
 
 if "page" not in st.session_state:
@@ -40,7 +40,7 @@ st.sidebar.info(
     icon="ℹ️"
 )
 
-html_tags = ["div", "article", "section", "span", "a", "h1", "h2", "h3", "h4", "h5", "p", "time", "style", "li", "ul", "i", "footer", "header", "figure", "nav", "script"]
+html_tags = ["div", "article", "section", "span","body", "a", "h1", "h2", "h3", "h4", "h5", "p", "time", "style", "li", "ul", "i", "footer", "header", "figure", "nav", "script"]
 
 # ===== Halaman Scrap Satu Artikel =====
 if st.session_state.page == "📄 Scrap Satu Artikel":
