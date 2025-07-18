@@ -1,2 +1,2 @@
 # ScrapBine
-Tool Scraping dan COmbine File Sederhana
+Tool Scraping dan Combine File Sederhana
